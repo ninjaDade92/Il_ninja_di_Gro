@@ -16,7 +16,7 @@ function FilterableProductTable() {
 
   return (
     <div class="FilterableProductTable">
-
+      <SearchBar />
       <ProductTable prodotti = {prodotti} />
     </div>
   )  
@@ -27,6 +27,18 @@ function ProductRow({ nome, prezzo, inStock }) {
     <div class="ProductRow">
       <span class="Name">{ nome }</span>
       <span class="Price">{ prezzo }</span>
+    </div>
+  )
+}
+
+function SearchBar() {
+  return (
+    <div class="SearchBar">
+      <input type="text" id="search" placeholder="Search..."  />
+      <label>
+        <input type="checkbox" id="instock"/>
+        Only show products in stock
+      </label>
     </div>
   )
 }
