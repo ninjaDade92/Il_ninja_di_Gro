@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 function FilterableProductTable() {
+
+  const [filterText, setFilterText] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
   
   let prodotti = [
     { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
@@ -16,17 +17,13 @@ function FilterableProductTable() {
 
   return (
     <div class="FilterableProductTable">
-      <SearchBar />
-      <ProductTable prodotti = {prodotti} />
-    </div>
-  )  
-  }
-
-function ProductRow({ nome, prezzo, inStock }) {
-  return (
-    <div class="ProductRow">
-      <span class="Name">{ nome }</span>
-      <span class="Price">{ prezzo }</span>
+      <SearchBar 
+        filterText={ filterText }
+        inStockOnly={ inStockOnly }/>
+      <ProductTable 
+        prodotti={ prodotti } 
+        filterText={ filterText }
+        inStockOnly={ inStockOnly }/>
     </div>
   )
 }
@@ -34,11 +31,25 @@ function ProductRow({ nome, prezzo, inStock }) {
 function SearchBar() {
   return (
     <div class="SearchBar">
-      <input type="text" id="search" placeholder="Search..."  />
+      <input type="text" id="search" placeholder="Search..." />
       <label>
         <input type="checkbox" id="instock"/>
         Only show products in stock
       </label>
+    </div>
+  )
+}
+
+function ProductRow({ nome, prezzo, stock }) {
+
+  if (stock === false) {
+    nome = <span class="out_of_stock">{ nome }</span>
+  }
+
+  return (
+    <div class="ProductRow">
+      <span class="Name">{ nome }</span>
+      <span class="Price">{ prezzo }</span>
     </div>
   )
 }
@@ -49,20 +60,18 @@ function ProductCategoryRow({ categoria }) {
       { categoria }
     </div>
   )
-}
+} 
 
 function ProductTable({ prodotti }) {
   let righe = [];
 
-  righe.push(<ProductCategoryRow categoria="Fruits" />)
-  let fruits = prodotti.filter(p => p.category === "Fruits")  //Passa tutti i valori di "prodotti" in "p" 
-  fruits.forEach(p => righe.push(<ProductRow nome={p.name} prezzo={p.price} />)); /*Passa in rassegna
-  tutti i frutti e gli applica la funzione ossia applicando il nome  e il prezzo */       
-  
-  righe.push(<ProductCategoryRow categoria="Fruits" />)
-  let vegetables = prodotti.filter(p => p.category === "Fruits")  //Passa tutti i valori di "vegetables" in "p" 
-  vegetables.forEach(p => righe.push(<ProductRow nome={p.name} prezzo={p.price} />)); /*Passa in rassegna 
-  tutte le verdure e gli applica la funzione ossia applicando il nome  e il prezzo */
+  righe.push(<ProductCategoryRow categoria="Fruits" />);
+  let fruits = prodotti.filter(p => p.category === "Fruits");
+  fruits.forEach(p => righe.push(<ProductRow nome={p.name} prezzo={p.price} stock={p.stocked} />));
+
+  righe.push(<ProductCategoryRow categoria="Vegetables" />);
+  let vegetables = prodotti.filter(p => p.category === "Vegetables");
+  vegetables.forEach(p => righe.push(<ProductRow nome={p.name} prezzo={p.price} stock={p.stocked} />));
 
   return (
     <div class="ProductTable">
@@ -74,8 +83,5 @@ function ProductTable({ prodotti }) {
     </div>
   )
 }
-export default FilterableProductTable
 
-
-
-
+export default  FilterableProductTable;
